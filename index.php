@@ -16,13 +16,12 @@ if(isset($_POST['registerUsername']) && isset($_POST['password']) && isset($_POS
 }
 if(isset($_GET['module'])){
     if($userStatus != 1 && $_GET['module'] != 'login' && $_GET['module'] != 'register'){
-        $html .= 'U mag helaas nog niet naar die pagina u bent nu terug op de login pagina,<br>u mag vanaf hier alleen maar naar de registratie pagina heehe' . include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'login.php');
+        $html .= 'U mag helaas nog niet naar die pagina u bent nu terug op de login pagina,<br>u mag vanaf hier alleen maar naar de registratie pagina heehe' . include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'login' . DIRECTORY_SEPARATOR . 'index.php');
     } else {
-        $html .= include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $_GET['module'] . '.php');
+        $html .= include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $_GET['module'] . DIRECTORY_SEPARATOR . 'index.php');
     }
 } else {
-    $html .= include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'login.php');
+    $html .= include_once(__DIR__ . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'login' . DIRECTORY_SEPARATOR . 'index.php');
 }
 echo $html . '<br>';
-print_r($_SESSION);
 ?>

@@ -31,7 +31,7 @@ class db {
                 if($this->result->num_rows > 0){
                     $records = $this->result->fetch_all();
                     if(!empty($records)){
-                        return array('true', $records);
+                        return array(true, $records);
                     }
                 } else {
                     return 'No records found';
@@ -74,7 +74,7 @@ class user {
     public function userLogin($username, $password){
         $sql = "SELECT * FROM users WHERE username = '" . $username . "' AND userpass = password('" . $password . "');";
     	$this->result = $this->dbObj->selectFunction($sql);
-        if($this->result[0] != true){
+        if($this->result[0] !== true){
             $_SESSION['userStatus'] = 0; 
         } else {
             $_SESSION['userStatus'] = 1;
