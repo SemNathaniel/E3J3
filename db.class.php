@@ -47,7 +47,7 @@ class db {
         if(!empty($sql)){
             $sql = trim($sql);
             if($this->result = $this->dbcon->query($sql)){
-                if($this->result->num_rows > 0){
+                if($this->result == true){
                     return true;
                 } else {
                     return 'No records found';
@@ -69,66 +69,42 @@ class user {
         $this->dbObj = new db;
         $this->con = $this->dbObj->dbcon;
     }
+
+
     public function userLogin($username, $password){
         $sql = "SELECT * FROM users WHERE username = '" . $username . "' AND userpass = password('" . $password . "');";
-        if(!empty($sql)){
-            $sql = trim($sql);
-            if($this->result = $this->con->query($sql)){
-                if($this->result->num_rows > 0){
-                    $records = $this->result->fetch_all();
-                    if(!empty($records)){
-                        return 'ingelogd!';
-                        $_SESSION['userStatus'] = 1;
-                    }
-                } else {
-                    return 'No records found';
-                }
-            } else {
-                return 'Query failed' . $this->con->error;
-            }
+    	$this->result = $this->dbObj->selectFunction($sql);
+        if($this->result[0] != true){
+            $_SESSION['userStatus'] = 0; 
         } else {
-            return 'no query given';
+            $_SESSION['userStatus'] = 1;
         }
+        $_SESSION['userId'] = $this->result[1][0][0];
+        return $this->dbObj;
     }
-
     public function isUserLoggedIn(){
-        if(empty($_POST)){
-            session_start();
-            if($_SESSION['userStatus'] == 0){
+        session_start();
+        if(!isset($_SESSION['userStatus'])){
+            $_SESSION['userStatus'] = 0;
+        } else {
+            if($_SESSION['userStatus'] == 1){
+                return 1;
+            } else {
                 $_SESSION['userStatus'] = 0;
                 return false;
-            } else {
-                $_SESSION['userStatus'] = 1;
-                return true;
             }
-        } else {
-            session_start();
-            $_SESSION['userStatus'] = 1;
         }
     }
 
     public function registerUser($userNameFromPOST, $userPassFromPOST, $firstFromPOST, $lastFromPOST, $dateOfBirthFromPOST){
         $sql = "INSERT INTO users(username, userpass, firstname, lastname, birthday) VALUES('" . $userNameFromPOST . "', password('" . $userPassFromPOST . "'), '" . $firstFromPOST . "', '" . $lastFromPOST . "', '" . $dateOfBirthFromPOST . "');";
-        if(!empty($sql)){
-            $sql = trim($sql);
-            if($this->result = $this->con->query($sql)){
-                if($this->result->num_rows > 0){
-                    $records = $this->result->fetch_all();
-                    return $records;
-                } else {
-                    return 'No records found';
-                }
-            } else {
-                return 'Query failed' . $this->con->error;
-            }
-        } else {
-            return 'no query given';
-        }
+        return $this->dbObj->otherSqlFunction($sql);
     }
 
     public function logoutUser(){
         if(isset($_SESSION)){
             $_SESSION['userStatus'] = 0;
+            $_SESSION['userId'] = null;
             session_unset();
         }
     }
